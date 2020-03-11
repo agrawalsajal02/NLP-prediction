@@ -1,4 +1,4 @@
-from flask import Flask,render_template,url_for,request
+from flask import Flask,render_template,url_for,request,jsonify
 import pandas as pd 
 import pickle
 from sklearn.feature_extraction.text import CountVectorizer
@@ -54,6 +54,18 @@ def predict():
 		vect = cv.transform(data).toarray()
 		my_prediction = clf.predict(vect)
 	return render_template('result.html',prediction = my_prediction)
+
+@app.route('/predictapi',methods=['POST'])
+def predictapi():
+	data = request.get_json(force=True)
+	ppp = cv.transform(list(data.values())).toarray()
+	output = clf.predict(ppp)
+	if(str(output[0])=='1'):
+		return "spam"
+	else:
+		return "not spam"
+
+
 
 
 
